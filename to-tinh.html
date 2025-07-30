@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Tỏ tình với cậu 💌</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: "Comic Sans MS", sans-serif; }
+    body, html { height: 100%; background: pink; overflow: hidden; }
+    .page {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      background: linear-gradient(to bottom right, #ffc0cb, #ffb6c1);
+      transition: transform 1s ease;
+    }
+    h1 { font-size: 2.3rem; margin-bottom: 20px; color: #fff; text-shadow: 2px 2px #ff69b4; text-align: center; }
+    .btns { margin-top: 20px; }
+    button {
+      padding: 12px 24px;
+      font-size: 1.2rem;
+      margin: 10px;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    button:hover { transform: scale(1.1); }
+    .yes { background-color: #ff69b4; color: white; }
+    .no {
+      background-color: #ccc;
+      color: #333;
+      position: absolute;
+    }
+    .heart {
+      position: absolute;
+      width: 20px; height: 20px;
+      background: red;
+      transform: rotate(45deg);
+      animation: fall 5s linear infinite;
+      z-index: 1000;
+    }
+    .heart::before, .heart::after {
+      content: "";
+      position: absolute;
+      width: 20px; height: 20px;
+      background: red;
+      border-radius: 50%;
+    }
+    .heart::before { top: -10px; left: 0; }
+    .heart::after { left: -10px; top: 0; }
+    @keyframes fall {
+      0% { top: -10%; opacity: 1; }
+      100% { top: 110%; opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Nhạc nền -->
+<audio id="bgMusic" loop>
+  <source src="https://cdn.pixabay.com/download/audio/2022/03/16/audio_65a8c426fc.mp3?filename=romantic-piano-ambient-110387.mp3" type="audio/mp3">
+</audio>
+
+<!-- Trang mở đầu -->
+<div class="page" id="page0">
+  <h1>💌 Chào cậu! Mình có điều muốn hỏi...</h1>
+  <div class="btns">
+    <button class="yes" onclick="nextPage()">Tiếp tục</button>
+  </div>
+</div>
+
+<script>
+  const questions = [
+    "🌹 Cậu có thấy mình dễ thương không?",
+    "🎈 Cậu có hay nghĩ đến mình không?",
+    "🍬 Cậu có muốn đi chơi với mình không?",
+    "💫 Cậu có cảm thấy vui khi nói chuyện với mình không?",
+    "💗 Cậu có thấy mình quan tâm cậu không?",
+    "💍 Cậu có muốn làm người yêu mình không?"
+  ];
+
+  let currentPage = 0;
+
+  const body = document.body;
+  const pages = [];
+
+  // Tạo các trang câu hỏi tự động
+  for (let i = 0; i < questions.length; i++) {
+    const page = document.createElement('div');
+    page.className = 'page';
+    page.style.transform = 'translateX(100vw)';
+    page.innerHTML = `
+      <h1>${questions[i]}</h1>
+      <div class="btns">
+        <button class="yes" onclick="nextPage()">Có</button>
+        <button class="no" onclick="moveNo(this)">Không</button>
+      </div>
+    `;
+    page.id = "page" + (i + 1);
+    body.appendChild(page);
+    pages.push(page);
+  }
+
+  // Trang cuối
+  const finalPage = document.createElement('div');
+  finalPage.className = 'page';
+  finalPage.style.background = '#ff69b4';
+  finalPage.style.transform = 'translateX(100vw)';
+  finalPage.id = 'finalPage';
+  finalPage.innerHTML = `
+    <h1 id="loveMsg">💖 Cảm ơn cậu! Vậy từ giờ, chúng ta là một cặp nhé 😍</h1>
+    <div class="btns">
+      <button onclick="changeText()">Sửa lời tỏ tình 💬</button>
+    </div>
+  `;
+  body.appendChild(finalPage);
+
+  const allPages = document.querySelectorAll('.page');
+
+  function nextPage() {
+    if (currentPage < allPages.length - 1) {
+      allPages[currentPage].style.transform = "translateX(-100vw)";
+      allPages[currentPage + 1].style.transform = "translateX(0)";
+      currentPage++;
+    }
+
+    // Trang cuối: bắt đầu tim rơi, nhạc, chuyển link
+    if (currentPage === allPages.length - 1) {
+      startHeartRain();
+      document.getElementById("bgMusic").play();
+
+      // Chuyển sau 7 giây sang IG/Zalo
+      setTimeout(() => {
+        window.location.href = "https://zalo.me/0123456789"; // 👈 Đổi sang link của bạn
+      }, 7000);
+    }
+  }
+
+  function moveNo(btn) {
+    btn.style.top = `${Math.random() * 80 + 10}%`;
+    btn.style.left = `${Math.random() * 80 + 10}%`;
+  }
+
+  function changeText() {
+    const newMsg = prompt("Nhập lời tỏ tình bạn muốn:");
+    if (newMsg) document.getElementById("loveMsg").innerText = "💖 " + newMsg;
+  }
+
+  function startHeartRain() {
+    const interval = setInterval(() => {
+      const heart = document.createElement("div");
+      heart.classList.add("heart");
+      heart.style.left = Math.random() * 100 + "vw";
+      heart.style.animationDelay = Math.random() * 5 + "s";
+      document.body.appendChild(heart);
+      setTimeout(() => heart.remove(), 5000);
+    }, 200);
+    setTimeout(() => clearInterval(interval), 15000);
+  }
+</script>
+
+</body>
+</html>
